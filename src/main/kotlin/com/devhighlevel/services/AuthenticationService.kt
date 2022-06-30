@@ -1,8 +1,11 @@
 package com.devhighlevel.services
 
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import com.devhighlevel.dto.UserAuthenticated
 import com.devhighlevel.dto.UserLogin
 import com.devhighlevel.plugins.AuthenticationException
+import java.util.*
 
 class AuthenticationService(private val userService: UserService) {
 
@@ -25,7 +28,13 @@ class AuthenticationService(private val userService: UserService) {
         } catch (e: Exception) {
             throw AuthenticationException("Unauthorized. User ${userLogin.username} not found")
         }
-
-
     }
+
+     fun createToken(issuer: String, audience: String, secret: String, userAuthenticated: UserAuthenticated): String = JWT.create()
+        .withAudience(audience)
+        .withIssuer(issuer)
+        .withClaim("username", userAuthenticated.username)
+        .withClaim("role", userAuthenticated.role)
+        .withExpiresAt( Date(System.currentTimeMillis() + 6 * 3600000 ) )
+        .sign(Algorithm.HMAC256(secret))
 }

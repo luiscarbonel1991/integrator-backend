@@ -1,6 +1,7 @@
-package com.devhighlevel.plugins
+package com.devhighlevel.config
 
-import com.devhighlevel.config.MongoClient
+import com.devhighlevel.clients.MongoClient
+import com.devhighlevel.config.Config
 import com.devhighlevel.db.repository.UserRepository
 import com.devhighlevel.services.AuthenticationService
 import com.devhighlevel.services.UserService
@@ -13,6 +14,7 @@ object ModuleLoader {
         startKoin {
             modules(
                 listOf(
+                    environmentModule(),
                     clientModule(),
                     repositoryModule(),
                     serviceModule()
@@ -20,6 +22,10 @@ object ModuleLoader {
             )
         }
     }
+}
+
+fun environmentModule() = module {
+    single { Config() }
 }
 
 fun clientModule() = module {

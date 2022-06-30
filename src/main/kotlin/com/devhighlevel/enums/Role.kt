@@ -1,4 +1,4 @@
-package com.devhighlevel
+package com.devhighlevel.enums
 
 import java.lang.IllegalArgumentException
 

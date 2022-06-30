@@ -7,10 +7,10 @@ import io.ktor.http.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 
 fun Application.configureRouting() {
-
 
     val secret = environment.config.property("jwt.secret").getString()
     val issuer = environment.config.property("jwt.issuer").getString()
@@ -18,31 +18,30 @@ fun Application.configureRouting() {
     val myRealm = environment.config.property("jwt.realm").getString()
 
     routing {
-        trace { application.log.trace(it.buildText()) }
-        v1(secret, issuer, audience, myRealm)
+        trace()
+        route("/v1") {
+            authenticationRoute(secret, issuer, audience, myRealm)
+
+            authenticate("auth-jwt") {
+                get("/health") {
+                    call.respondText("Health OK!")
+                }
+                usersRoute()
+            }
+        }
     }
 
     statusPages()
 
 }
 
-private fun Routing.v1(
-    secret: String,
-    issuer: String,
-    audience: String,
-    myRealm: String
-) {
-    route("/v1") {
-        authenticationRoute(secret, issuer, audience, myRealm)
-
-        authenticate("auth-jwt") {
-            usersRoute()
-
-            get("/") {
-                call.respondText("Health OK!")
-            }
-
-        }
+private fun Routing.trace() {
+    trace {
+        application.log.info(
+            "Trace Request: HTTP method: ${it.call.request.httpMethod.value}, " +
+                    "URL: ${it.call.request.uri}, " +
+                    "User agent: ${it.call.request.userAgent()}"
+        )
     }
 }
 

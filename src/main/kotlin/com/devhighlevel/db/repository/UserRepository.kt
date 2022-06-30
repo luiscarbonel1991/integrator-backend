@@ -1,6 +1,6 @@
 package com.devhighlevel.db.repository
 
-import com.devhighlevel.config.MongoClient
+import com.devhighlevel.clients.MongoClient
 import com.devhighlevel.db.documents.User
 import org.litote.kmongo.eq
 
@@ -11,17 +11,17 @@ class UserRepository(
 
     override suspend fun findAll(): List<User> = collection.find().toList()
 
-    override suspend fun save(user: User): User {
-        collection.insertOne(user)
-        return user
+    override suspend fun save(e: User): User {
+        collection.insertOne(e)
+        return e
     }
-    override suspend fun update(user: User): User {
-        collection.save(user)
-        return user
+    override suspend fun update(e: User): User {
+        collection.save(e)
+        return e
     }
 
-    override suspend fun delete(userId: String) {
-        collection.deleteOne(User::id eq userId)
+    override suspend fun delete(id: String) {
+        collection.deleteOne(User::id eq id)
     }
 
     suspend fun findById(userId: String) =

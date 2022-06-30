@@ -25,7 +25,6 @@ fun Application.configureSecurity() {
                     .build()
             )
             validate { credential ->
-               println( "Intercept request Http_Method => ${this.request.httpMethod}, URI => ${this.request.uri}")
                 if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
             }
             challenge { defaultScheme, realm ->

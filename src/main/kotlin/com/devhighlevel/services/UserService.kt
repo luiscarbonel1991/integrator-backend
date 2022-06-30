@@ -1,6 +1,6 @@
 package com.devhighlevel.services
 
-import com.devhighlevel.Role
+import com.devhighlevel.enums.Role
 import com.devhighlevel.db.documents.User
 import com.devhighlevel.db.repository.UserRepository
 import com.devhighlevel.dto.UserCreateRequestDTO

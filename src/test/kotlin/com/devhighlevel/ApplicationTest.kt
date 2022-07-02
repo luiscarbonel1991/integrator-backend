@@ -6,16 +6,17 @@ import io.ktor.client.statement.*
 import kotlin.test.*
 import io.ktor.server.testing.*
 import com.devhighlevel.plugins.*
+import io.ktor.server.application.*
+import io.ktor.server.routing.*
 
 class ApplicationTest {
     @Test
     fun testRoot() = testApplication {
         application {
-            configureRoutingV1()
+         configureRouting()
         }
-        client.get("/").apply {
+        client.get("/v1/health").apply {
             assertEquals(HttpStatusCode.OK, status)
-            assertEquals("Hello World!", bodyAsText())
         }
     }
 }

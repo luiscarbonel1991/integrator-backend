@@ -1,11 +1,11 @@
 package com.devhighlevel
 
-import com.devhighlevel.config.Config
-import com.devhighlevel.config.ModuleLoader
-import com.devhighlevel.plugins.configureHTTP
-import com.devhighlevel.plugins.configureRouting
-import com.devhighlevel.plugins.configureSecurity
-import com.devhighlevel.plugins.configureSerialization
+import com.devhighlevel.application.config.Config
+import com.devhighlevel.application.config.ModuleLoader
+import com.devhighlevel.presentation.plugins.configureHTTP
+import com.devhighlevel.presentation.plugins.configureRouting
+import com.devhighlevel.presentation.plugins.configureSecurity
+import com.devhighlevel.presentation.plugins.configureSerialization
 import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.engine.*

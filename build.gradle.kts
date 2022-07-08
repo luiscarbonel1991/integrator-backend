@@ -35,7 +35,9 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("org.litote.kmongo:kmongo-coroutine:$kmongo_version")
-    // Koin for Ktor
+    implementation(platform("software.amazon.awssdk:bom:2.15.0"))
+    implementation("software.amazon.awssdk:s3")
+    implementation("software.amazon.awssdk:netty-nio-client")
     implementation ("io.insert-koin:koin-ktor:$koin_version")
     implementation("io.ktor:ktor-server-double-receive:$ktor_version")
     implementation("io.ktor:ktor-server-call-logging:$ktor_version")

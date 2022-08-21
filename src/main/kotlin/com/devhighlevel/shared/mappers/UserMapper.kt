@@ -1,6 +1,6 @@
 package com.devhighlevel.shared.mappers
 
-import com.devhighlevel.infraestructure.db.documents.User
+import com.devhighlevel.domain.user.User
 import com.devhighlevel.shared.dto.UserCreateRequestDTO
 import com.devhighlevel.shared.dto.UserResponseDTO
 

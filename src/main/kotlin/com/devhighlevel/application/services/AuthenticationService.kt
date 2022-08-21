@@ -7,11 +7,11 @@ import com.devhighlevel.shared.dto.UserAuthenticated
 import com.devhighlevel.shared.dto.UserLogin
 import java.util.*
 
-class AuthenticationService(private val userService: UserService) {
+class AuthenticationService(private val userCommandHandler: UserCommandHandler) {
 
     suspend fun login(userLogin: UserLogin): UserAuthenticated {
         try {
-            val user = userService.findByEmail(userLogin.username)
+            val user = userCommandHandler.findByEmail(userLogin.username)
             if (user.enabled == false) {
                 throw AuthenticationException("Unauthorized. User not enabled.")
             }
@@ -21,7 +21,7 @@ class AuthenticationService(private val userService: UserService) {
                     user.enabled = false
                     user.attempts = 3
                 }
-                userService.update(user)
+                userCommandHandler.update(user)
                 throw AuthenticationException("Unauthorized. Incorrect user or password")
             }
             return UserAuthenticated(user.email, user.role)
@@ -35,6 +35,6 @@ class AuthenticationService(private val userService: UserService) {
         .withIssuer(issuer)
         .withClaim("username", userAuthenticated.username)
         .withClaim("role", userAuthenticated.role)
-        .withExpiresAt( Date(System.currentTimeMillis() + 6 * 3600000 ) )
+        .withExpiresAt(Date(System.currentTimeMillis() + 6 * 3600000 ) )
         .sign(Algorithm.HMAC256(secret))
 }

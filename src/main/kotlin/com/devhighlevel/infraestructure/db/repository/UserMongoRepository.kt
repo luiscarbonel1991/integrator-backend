@@ -1,12 +1,13 @@
 package com.devhighlevel.infraestructure.db.repository
 
+import com.devhighlevel.domain.user.User
+import com.devhighlevel.domain.user.repository.UserRepository
 import com.devhighlevel.infraestructure.clients.MongoClient
-import com.devhighlevel.infraestructure.db.documents.User
 import org.litote.kmongo.eq
 
-class UserRepository(
+class UserMongoRepository(
     client: MongoClient
-) : GenericCrud<User>{
+) : UserRepository {
     private val collection = client.db().getCollection<User>("users")
 
     override suspend fun findAll(): List<User> = collection.find().toList()
@@ -24,8 +25,7 @@ class UserRepository(
         collection.deleteOne(User::id eq id)
     }
 
-    suspend fun findById(userId: String) =
-        collection.findOne(User::id eq userId)
+    override suspend fun findById(userId: String) = collection.findOne(User::id eq userId)
 
-    suspend fun findByEmail(email: String) = collection.findOne(User::email eq email)
+    override suspend fun findByEmail(email: String) = collection.findOne(User::email eq email)
 }

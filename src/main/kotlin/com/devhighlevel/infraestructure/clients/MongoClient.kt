@@ -9,7 +9,5 @@ class MongoClient(val config: Config) {
 
         private val connectionUrl: String = config.prop("db.mongo.url")
         private var mongoClient: CoroutineClient = KMongo.createClient(connectionUrl).coroutine
-
-
         fun db() =  mongoClient.getDatabase(config.prop("db.mongo.database"))
 }

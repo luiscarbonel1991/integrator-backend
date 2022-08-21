@@ -1,4 +1,4 @@
-package com.devhighlevel.infraestructure.db.documents
+package com.devhighlevel.domain.user
 
 import org.bson.codecs.pojo.annotations.BsonId
 

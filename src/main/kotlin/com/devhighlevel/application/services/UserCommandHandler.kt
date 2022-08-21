@@ -1,8 +1,9 @@
 package com.devhighlevel.application.services
 
+import com.devhighlevel.domain.user.services.UserService
+import com.devhighlevel.domain.user.User
+
 import com.devhighlevel.shared.enums.Role
-import com.devhighlevel.infraestructure.db.documents.User
-import com.devhighlevel.infraestructure.db.repository.UserRepository
 import com.devhighlevel.shared.dto.UserCreateRequestDTO
 import com.devhighlevel.shared.dto.UserUpdateRequestDTO
 import com.devhighlevel.shared.mappers.UserMapper
@@ -10,9 +11,9 @@ import io.ktor.server.plugins.*
 import io.ktor.util.reflect.*
 import java.util.*
 
-class UserService(private val userRepository: UserRepository) {
+class UserCommandHandler(private val userService: UserService) {
 
-    suspend fun users() = userRepository.findAll()
+    suspend fun users() = userService.users()
 
     suspend fun create(userCreateRequestDTO: UserCreateRequestDTO): User {
         kotlin.runCatching {
@@ -20,7 +21,7 @@ class UserService(private val userRepository: UserRepository) {
         }.onSuccess {
             throw BadRequestException("User with email: ${userCreateRequestDTO.email} already exist.")
         }.onFailure { }
-        return userRepository.save(UserMapper.toCreateUser(userCreateRequestDTO))
+        return userService.create(UserMapper.toCreateUser(userCreateRequestDTO))
     }
 
     suspend fun update(userUpdateRequestDTO: UserUpdateRequestDTO, id: String): User {
@@ -31,11 +32,11 @@ class UserService(private val userRepository: UserRepository) {
         userUpdateRequestDTO.name?.let { userFound.name = it }
         userUpdateRequestDTO.password?.let { userFound.password = it }
         userUpdateRequestDTO.role?.let { userFound.role = it }
-        return userRepository.update(userFound)
+        return userService.update(userFound)
     }
 
     suspend fun update(user: User): User {
-        return userRepository.update(user)
+        return userService.update(user)
     }
 
     suspend fun enableOrDisable(userUpdateRequestDTO: UserUpdateRequestDTO, id: String): User {
@@ -44,7 +45,7 @@ class UserService(private val userRepository: UserRepository) {
             userUpdateRequestDTO.enabled.let {
                 if (it) userFound.attempts = 0 else userFound.attempts = 3
                 userFound.enabled = it
-                return userRepository.update(userFound)
+                return userService.update(userFound)
             }
         }
         throw BadRequestException("Field 'enabled' is empty or null")
@@ -58,7 +59,7 @@ class UserService(private val userRepository: UserRepository) {
                 val userFound = findById(id)
                 userUpdateRequestDTO.role.let {
                     userFound.role = it
-                    return userRepository.update(userFound)
+                    return userService.update(userFound)
                 }
             }.onFailure {
                 throw BadRequestException(it.message ?: "Role is invalid")
@@ -69,7 +70,7 @@ class UserService(private val userRepository: UserRepository) {
 
     suspend fun delete(userId: String): User {
         val userFound = findById(userId)
-        userRepository.delete(userFound.id!!)
+        userService.delete(userFound.id!!)
         return userFound
     }
 
@@ -100,10 +101,10 @@ class UserService(private val userRepository: UserRepository) {
     }
 
     suspend fun findByEmail(email: String) =
-        userRepository.findByEmail(email) ?: throw NotFoundException("User with email $email not found")
+        userService.findByEmail(email) ?: throw NotFoundException("User with email $email not found")
 
 
     private suspend fun findById(userId: String) =
-        userRepository.findById(userId) ?: throw NotFoundException("User with id: $userId not found")
+        userService.findById(userId) ?: throw NotFoundException("User with id: $userId not found")
 
 }
